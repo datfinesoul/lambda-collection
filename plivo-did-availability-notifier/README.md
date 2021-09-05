@@ -15,3 +15,4 @@ aws lambda invoke \
   - https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html
 - environment vars from secrets
 - source the lambda from github, or have github deploy it, but this script configure it?
+-
