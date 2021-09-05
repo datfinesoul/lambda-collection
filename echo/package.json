@@ -1,0 +1,11 @@
+{
+  "name": "echo",
+  "version": "1.0.0",
+  "description": "echo and return 200",
+  "main": "main.js",
+  "scripts": {},
+  "author": "613305+datfinesoul@users.noreply.github.com",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {}
+}
