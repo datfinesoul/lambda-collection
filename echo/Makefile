@@ -2,7 +2,7 @@ main:
 	@echo "valid options:\n- build\n- lint"
 
 build:
-	zip
+	zip index main.js package.json
 
 lint:
 	npx standard --fix
