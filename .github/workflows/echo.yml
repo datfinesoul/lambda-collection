@@ -16,11 +16,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Build Artifact
+      - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Build Artifact
         run: |
           echo "Hello!"
           pwd
+          ls
+          id
 
       #- name: Configure AWS Credentials
       #  uses: aws-actions/configure-aws-credentials@v1
@@ -30,10 +34,12 @@ jobs:
       #    # aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} # if you have/need it
       #    aws-region: ap-northeast-1
 
-      #- name: Upload to S3
-      #  uses: docker://amazon/aws-cli:2.0.7
-      #  env:
-      #    AWS_ACCESS_KEY_ID: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_ID }}
-      #    AWS_SECRET_ACCESS_KEY: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_SECRET }}
-      #  with:
-      #    args: s3 cp ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_S3_URL }} /github/home/downloaded_file
+      - name: Upload to S3
+        uses: docker://amazon/aws-cli:2.2.35
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_SECRET }}
+          AWS_REGION: 'ap-northeast-1'
+        with:
+          #args: s3 cp ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_S3_URL }} /github/home/downloaded_file
+          args: s3 ls ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_S3_URL }}
