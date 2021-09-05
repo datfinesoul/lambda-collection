@@ -21,10 +21,12 @@ jobs:
 
       - name: Build Artifact
         run: |
+          env
           pushd echo &> /dev/null
           make build
-          mv index.zip "${RUNNER_TEMP}/index.zip"
-          echo "ARTIFACT=$(readlink -e "${RUNNER_TEMP}/index.zip")" >> $GITHUB_ENV
+          # docker containers have a different GITHUB_WORKSPACE directory than
+          # non-docker run commands
+          echo "ARTIFACT=/github/workspace/echo/__dist/index.zip" >> $GITHUB_ENV
 
       - name: Upload to S3
         uses: docker://amazon/aws-cli:2.2.35
