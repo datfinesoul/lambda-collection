@@ -1,0 +1,17 @@
+# TODO: https://docs.github.com/en/actions/learn-github-actions/sharing-workflows-with-your-organization#creating-a-workflow-template
+name: test-action
+
+on:
+  [push, pull_request]:
+    branches: [ main ]
+    paths: ['plivo-did-availability/**']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Hello
+        run: echo "World!"
