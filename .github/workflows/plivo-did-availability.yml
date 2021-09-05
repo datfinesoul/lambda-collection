@@ -5,10 +5,10 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'plivo-did-availability/**'
+      - 'plivo-did-availability-notifier/**'
   pull_request:
     branches: [ main ]
-    paths: ['plivo-did-availability/**']
+    paths: ['plivo-did-availability-notifier/**']
 
 jobs:
   build:
