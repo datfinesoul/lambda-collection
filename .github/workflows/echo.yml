@@ -6,6 +6,7 @@ on:
     branches: [ main ]
     paths:
       - 'echo/**'
+      - '.github/workflows/echo.yml'
   pull_request:
     branches: [ main ]
     paths: ['echo/**']
@@ -15,10 +16,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Build Artifact
         uses: actions/checkout@v2
-
-      - name: Hello
         run: |
           echo "Hello!"
           pwd
