@@ -1,5 +1,5 @@
 # TODO: https://docs.github.com/en/actions/learn-github-actions/sharing-workflows-with-your-organization#creating-a-workflow-template
-name: echo deployment
+name: 'build & deploy: echo'
 
 on:
   push:
@@ -21,28 +21,14 @@ jobs:
 
       - name: Build Artifact
         run: |
-          echo "Hello!"
-          pushd echo
           make build
           echo "ARTIFACT=$(readlink -e index.zip)" >> $GITHUB_ENV
-
-      #- name: Configure AWS Credentials
-      #  uses: aws-actions/configure-aws-credentials@v1
-      #  with:
-      #    aws-access-key-id: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_ID }}
-      #    aws-secret-access-key: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_SECRET }}
-      #    # aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} # if you have/need it
-      #    aws-region: ap-northeast-1
-      - name: test
-        run: |
-          echo "${{ env.ARTIFACT }}"
 
       - name: Upload to S3
         uses: docker://amazon/aws-cli:2.2.35
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_SECRET }}
-          AWS_REGION: 'ap-northeast-1'
+          AWS_REGION: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_REGION }}
         with:
-          #args: s3 cp ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_S3_URL }} /github/home/downloaded_file
-          args: s3 ls ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_S3_URL }}
+          args: s3 cp ${{ env.ARTIFACT }} ${{ secrets.LAMBDA_DEATHSTAR_3_S3_URL }}
