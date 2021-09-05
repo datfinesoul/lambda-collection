@@ -24,7 +24,7 @@ jobs:
           echo "Hello!"
           pushd echo
           make build
-          echo "::set-env name=ARTIFACT::$(readlink -e index.zip)"
+          echo "ARTIFACT=$(readlink -e index.zip)" >> $GITHUB_ENV
 
       #- name: Configure AWS Credentials
       #  uses: aws-actions/configure-aws-credentials@v1
@@ -35,7 +35,7 @@ jobs:
       #    aws-region: ap-northeast-1
       - name: test
         run: |
-          echo ${ARTIFACT}
+          echo "${{ env.ARTIFACT }}"
 
       - name: Upload to S3
         uses: docker://amazon/aws-cli:2.2.35
