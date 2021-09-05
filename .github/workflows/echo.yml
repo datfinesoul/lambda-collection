@@ -21,7 +21,7 @@ jobs:
 
       - name: Build Artifact
         run: |
-          env
+          env | sort
           pushd echo &> /dev/null
           make build
           # docker containers have a different GITHUB_WORKSPACE directory than

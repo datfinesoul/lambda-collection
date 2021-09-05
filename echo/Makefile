@@ -3,7 +3,7 @@ main:
 
 build:
 	mkdir __dist
-	zip index main.js package.json
+	zip __dist/index main.js package.json
 
 lint:
 	npx standard --fix
