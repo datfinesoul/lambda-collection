@@ -8,7 +8,8 @@ function makeResponse (code, body) {
 }
 
 async function handler (event, context) {
-  console.info(JSON.stringify({hello: 'world!'}))
+  const body = {hello: 'world!'}
+  console.info(JSON.stringify(body))
   return makeResponse(200, body)
 }
 
