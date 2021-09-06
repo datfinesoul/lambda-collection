@@ -35,9 +35,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_SECRET }}
           AWS_REGION: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_REGION }}
         run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
+          #curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          #unzip awscliv2.zip
+          #sudo ./aws/install
+          aws --version
           aws s3 ls ${{ secrets.LAMBDA_DEATHSTAR_3_S3_URL }}
 
       #- name: Upload to S3
