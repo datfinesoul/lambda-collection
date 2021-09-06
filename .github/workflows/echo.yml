@@ -14,7 +14,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: amazon/aws-cli:2.2.35
+    #container: amazon/aws-cli:2.2.35
 
     steps:
       - name: Checkout
@@ -28,7 +28,15 @@ jobs:
           # docker containers have a different GITHUB_WORKSPACE directory than
           # non-docker run commands
           echo "ARTIFACT=/github/workspace/echo/__dist/index.zip" >> $GITHUB_ENV
-          aws --version
+
+      - name: Deploy Artifact
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_SECRET }}
+          AWS_REGION: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_REGION }}
+        run: |
+          docker pull amazon/aws-cli:2.2.35
+          docker run --rm amazon/aws-cli:2.2.35 s3 ls ${{ secrets.LAMBDA_DEATHSTAR_3_S3_URL }}
 
       #- name: Upload to S3
         #uses: docker://amazon/aws-cli:2.2.35
