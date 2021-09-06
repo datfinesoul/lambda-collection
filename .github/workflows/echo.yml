@@ -35,11 +35,14 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_SECRET }}
           AWS_REGION: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_REGION }}
         run: |
-          #curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          #unzip awscliv2.zip
-          #sudo ./aws/install
           aws --version
           aws s3 ls ${{ secrets.LAMBDA_DEATHSTAR_3_S3_URL }}
+          aws s3 cp \
+            ${{ env.ARTIFACT }} \
+            s3://${{ secrets.LAMBDA_DEATHSTAR_3_S3_BUCKET }}/${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }}
+          aws s3api list-object-versions \
+            --bucket ${{ secrets.LAMBDA_DEATHSTAR_3_S3_BUCKET }} \
+            --prefix ${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }}
 
       #- name: Upload to S3
         #uses: docker://amazon/aws-cli:2.2.35
