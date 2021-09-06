@@ -22,11 +22,8 @@ jobs:
 
       - name: Build Artifact
         run: |
-          env | sort
           pushd echo &> /dev/null
           make build
-          # docker containers have a different GITHUB_WORKSPACE directory than
-          # non-docker run commands
           echo "ARTIFACT=./echo/__dist/index.zip" >> $GITHUB_ENV
 
       - name: Deploy Artifact
@@ -36,20 +33,22 @@ jobs:
           AWS_REGION: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_REGION }}
         run: |
           aws --version
-          S3_URL=s3://${{ secrets.LAMBDA_DEATHSTAR_3_S3_BUCKET }}/${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }}
-          aws s3 ls ${S3_URL}
-          aws s3 cp \
-            ${{ env.ARTIFACT }} \
-            ${S3_URL}
-          aws s3api list-object-versions \
+          VERSION_ID=$(aws s3api put-object \
+            --body ${{ env.ARTIFACT }} \
             --bucket ${{ secrets.LAMBDA_DEATHSTAR_3_S3_BUCKET }} \
-            --prefix ${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }}
+            --key ${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }} \
+            --query 'VersionId' \
+            --output text \
+          )
+          echo VERSION $VERSION_ID
 
-      #- name: Upload to S3
-        #uses: docker://amazon/aws-cli:2.2.35
-        #env:
-          #AWS_ACCESS_KEY_ID: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_ID }}
-          #AWS_SECRET_ACCESS_KEY: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_SECRET }}
-          #AWS_REGION: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_REGION }}
-        #with:
-          #args: s3 cp ${{ env.ARTIFACT }} ${{ secrets.LAMBDA_DEATHSTAR_3_S3_URL }}
+          #aws s3api list-object-versions \
+            #--bucket ${{ secrets.LAMBDA_DEATHSTAR_3_S3_BUCKET }} \
+            #--prefix ${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }}
+          aws lambda update-function-code \
+            --function-name deathstar-3 \
+            --s3-bucket ${{ secrets.LAMBDA_DEATHSTAR_3_S3_BUCKET }} \
+            --s3-key ${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }} \
+            --s3-object-version ${VERSION_ID} \
+            --publish
+
