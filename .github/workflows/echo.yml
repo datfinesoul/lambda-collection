@@ -36,10 +36,11 @@ jobs:
           AWS_REGION: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_REGION }}
         run: |
           aws --version
-          aws s3 ls ${{ secrets.LAMBDA_DEATHSTAR_3_S3_URL }}
+          S3_URL=s3://${{ secrets.LAMBDA_DEATHSTAR_3_S3_BUCKET }}/${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }}
+          aws s3 ls ${S3_URL}
           aws s3 cp \
             ${{ env.ARTIFACT }} \
-            s3://${{ secrets.LAMBDA_DEATHSTAR_3_S3_BUCKET }}/${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }}
+            ${S3_URL}
           aws s3api list-object-versions \
             --bucket ${{ secrets.LAMBDA_DEATHSTAR_3_S3_BUCKET }} \
             --prefix ${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }}
