@@ -27,7 +27,7 @@ jobs:
           make build
           # docker containers have a different GITHUB_WORKSPACE directory than
           # non-docker run commands
-          echo "ARTIFACT=/github/workspace/echo/__dist/index.zip" >> $GITHUB_ENV
+          echo "ARTIFACT=./echo/__dist/index.zip" >> $GITHUB_ENV
 
       - name: Deploy Artifact
         env:
