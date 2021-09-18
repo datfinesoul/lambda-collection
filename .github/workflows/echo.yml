@@ -8,8 +8,8 @@ on:
       - 'echo/**'
       - '.github/workflows/echo.yml'
   pull_request:
-    branches: [ main ]
-    paths: ['echo/**']
+    branches: main
+    paths: ['echo/**', '.github/workflows/echo.yml']
 
 jobs:
   build:
@@ -33,22 +33,38 @@ jobs:
           AWS_REGION: ${{ secrets.LAMBDA_DEATHSTAR_3_AWS_REGION }}
         run: |
           aws --version
-          VERSION_ID=$(aws s3api put-object \
+          S3_VERSION_ID=$(aws s3api put-object \
             --body ${{ env.ARTIFACT }} \
             --bucket ${{ secrets.LAMBDA_DEATHSTAR_3_S3_BUCKET }} \
             --key ${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }} \
             --query 'VersionId' \
             --output text \
           )
-          echo VERSION $VERSION_ID
+          echo S3_VERSION $S3_VERSION_ID
 
-          #aws s3api list-object-versions \
-            #--bucket ${{ secrets.LAMBDA_DEATHSTAR_3_S3_BUCKET }} \
-            #--prefix ${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }}
-          aws lambda update-function-code \
+          LAMBDA_VERSION=$(aws lambda update-function-code \
             --function-name deathstar-3 \
             --s3-bucket ${{ secrets.LAMBDA_DEATHSTAR_3_S3_BUCKET }} \
             --s3-key ${{ secrets.LAMBDA_DEATHSTAR_3_S3_KEY }} \
-            --s3-object-version ${VERSION_ID} \
-            --publish
+            --s3-object-version ${S3_VERSION_ID} \
+            --publish \
+            --query 'Version' \
+            --output text \
+          )
+          echo LAMBDA_VERSION $LAMBDA_VERSION
 
+          env | grep -e 'GITHUB.*REF' | sort
+
+          aws lambda update-alias \
+            --function-name deathstar-3 \
+            --function-version ${LAMBDA_VERSION} \
+            --name main \
+            --description "${GITHUB_REPOSITORY}:${GITHUB_SHA}"
+
+#{
+#    "AliasArn": "arn:aws:lambda:ap-northeast-1:566134080430:function:deathstar-3:beta",
+#    "Name": "beta",
+#    "FunctionVersion": "14",
+#    "Description": "hello world",
+#    "RevisionId": "46014503-5969-4e5a-ba16-51e78179fe7f"
+#}
